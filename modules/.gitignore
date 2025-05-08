@@ -1,0 +1,46 @@
+# ========== OS-Level Noise ==========
+.DS_Store
+Thumbs.db
+
+# ========== Editor Backups ==========
+*~
+*.swp
+*.swo
+*.bak
+*.bak~
+*.tmp
+
+# ========== Fish Shell Generated Files ==========
+.fish_history
+.config/fish/fish_variables
+.config/fish/functions/fish_prompt.fish
+
+# ========== Shell Environment Histories ==========
+.bash_history
+.zsh_history
+
+# ========== System-Specific Directories ==========
+.cache/
+.local/share/fish/
+.local/state/
+.local/bin/appimages/*
+
+# ========== Dotfiles Metadata or Artifacts ==========
+bootstrap.log
+logs/
+!logs/.keep  # Keep empty dir if needed
+
+# ========== Flatpak + AppImage ==========
+*.desktop
+
+# ========== CLI Tool Output ==========
+*.log
+*.log.*
+*.out
+*.err
+*.pid
+*.pid.lock
+
+# ========== Misc ==========
+.envrc
+test_*

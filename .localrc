@@ -1,0 +1,6 @@
+# ~/.dotfiles/.localrc
+alias k='kubectl'
+alias ls='exa --icons'
+
+export EDITOR=nvim
+export PATH="$HOME/.local/bin:$PATH"

@@ -1,0 +1,7 @@
+# refind-themes.txt
+# Format: name    description             include_path
+blackcat    BlackCatMuzzle Theme         themes/BlackCatMuzzle/theme.conf
+glassy      Minimalist Glassy Theme      themes/rEFInd-glassy/theme.conf
+glow        Glow Horizon Theme           themes/glow/theme.conf
+rosepine    Rosé Pine Theme              themes/rose-pine/theme.conf
+blurrybox   Blur & Glow Theme            themes/rEFInd-theme/theme_dark.conf

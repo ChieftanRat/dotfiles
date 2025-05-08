@@ -1,0 +1,5 @@
+# themes.txt
+# Format: name    description
+catppuccin-mocha    Catppuccin Mocha Theme
+tokyonight          Tokyo Night Theme
+rosepine            Rosé Pine Theme
