@@ -40,3 +40,6 @@ else
     echo "ℹ️ Git identity already set: $current_name <$current_email>"
     echo "   Use --force to override."
 fi
+
+# Set Git pull behavior to merge (safe default)
+git config --global pull.rebase false
