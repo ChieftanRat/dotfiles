@@ -3,6 +3,11 @@ set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
 MODULES="$DOTFILES/modules"
+CONFIG_FISH="$HOME/.config/fish/config.fish"
+ALIASES_SOURCE_LINE='source ~/.dotfiles/modules/aliases.fish'
+
+source "$MODULES/_log.sh"
+source "$MODULES/_env.sh"
 
 # Ensure logs directory exists and is tracked via .keep
 if [[ ! -d "$DOTFILES/logs" ]]; then
@@ -19,8 +24,14 @@ else
   log "📎 logs/.keep already present"
 fi
 
-source "$MODULES/_log.sh"
-source "$MODULES/_env.sh"
+if ! grep -q "$ALIASES_SOURCE_LINE" "$CONFIG_FISH"; then
+  echo "" >> "$CONFIG_FISH"
+  echo "# Source dotfiles aliases" >> "$CONFIG_FISH"
+  echo "if test -f ~/.dotfiles/modules/aliases.fish" >> "$CONFIG_FISH"
+  echo "    $ALIASES_SOURCE_LINE" >> "$CONFIG_FISH"
+  echo "end" >> "$CONFIG_FISH"
+  log "🔗 Linked aliases.fish in config.fish"
+fi
 
 PROFILE="$HOME/.dotfiles/system-profile.sh"
 [ -f "$PROFILE" ] && source "$PROFILE"

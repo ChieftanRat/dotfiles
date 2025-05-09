@@ -1,7 +1,7 @@
 # ========================
 # 🐟 Custom Fish Config
 # ========================
-
+source /usr/share/cachyos-fish-config/cachyos-config.fish
 # --- Zoxide override for 'cd'
 if type -q zoxide
     zoxide init fish --cmd cd | source
@@ -9,17 +9,11 @@ end
 
 # --- Aliases
 alias nv='nvim'
-alias dotfiles='git -C ~/.dotfiles'
-alias reshell='source ~/.config/fish/config.fish'
+alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dfs='dotfiles status -uno'
+alias reload='source ~/.config/fish/config.fish'
 alias ..='cd ..'
 alias ...='cd ../..'
-
-alias gs='git status'
-alias gl='git log --oneline --graph --decorate --all'
-alias ga='git add .'
-alias gc='git commit -m'
-alias gp='git push'
-alias gpo='git push origin HEAD'
 
 alias update='yay -Syu'
 alias flatupdate='flatpak update'
@@ -44,13 +38,17 @@ alias lt='ls -ltrh'               # Sorted by time, human readable
 alias ll='ls -lah'                # Long list format including hidden
 alias c='clear'                   # Quick clear
 
-# Optional combined refresh alias
-alias refreshall='source ~/.config/fish/config.fish'
-
 # Aesthetic: shorten prompt directory length
 set -g fish_prompt_pwd_dir_length 2
 
 # Optional machine overrides
 if test -f ~/.dotfiles/.localrc
     source ~/.dotfiles/.localrc
+end
+
+set -Ux PATH $PATH /opt/nvim
+
+# Source custom dotfiles aliases
+if test -f ~/.dotfiles/modules/aliases.fish
+    source ~/.dotfiles/modules/aliases.fish
 end
