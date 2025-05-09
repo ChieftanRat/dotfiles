@@ -23,11 +23,18 @@ if test -f "$DOTFILES/modules/_log.fish"
     source "$DOTFILES/modules/_log.fish"
 end
 
-# Ensure the wallpapers target directory exists
+# Warn if a regular wallpapers directory already exists
 set -l pictures_wall_dir "$HOME/Pictures/wallpapers"
-if not test -d "$pictures_wall_dir"
-    mkdir -p "$pictures_wall_dir"
-    log "📁 Created $pictures_wall_dir"
+
+# Auto-handle conflicting directory for wallpapers
+if test -d "$pictures_wall_dir" -a ! -L "$pictures_wall_dir"
+    log "⚠️  Detected existing $pictures_wall_dir as a directory (not a symlink)."
+    if test $DRY_RUN -eq 1
+        log "[DRY RUN] Would remove $pictures_wall_dir before symlinking."
+    else
+        rm -rf "$pictures_wall_dir"
+        log "🧹 Removed existing directory $pictures_wall_dir to allow symlink."
+    end
 end
 
 # Symlink definitions
