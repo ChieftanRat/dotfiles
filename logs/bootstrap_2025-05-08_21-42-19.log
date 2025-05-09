@@ -1,6 +1,0 @@
-📸 Creating Timeshift snapshot...
-✅ Found dependency: git
-✅ Found dependency: fish
-✅ Found dependency: curl
-✅ Found dependency: rsync
-❌ 🛑 Required command 'neovim' not found in PATH.
