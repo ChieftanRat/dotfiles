@@ -4,6 +4,21 @@ set -euo pipefail
 DOTFILES="$HOME/.dotfiles"
 MODULES="$DOTFILES/modules"
 
+# Ensure logs directory exists and is tracked via .keep
+if [[ ! -d "$DOTFILES/logs" ]]; then
+  mkdir -p "$DOTFILES/logs"
+  log "📂 Created logs/ directory"
+else
+  log "📁 logs/ directory already exists"
+fi
+
+if [[ ! -f "$DOTFILES/logs/.keep" ]]; then
+  touch "$DOTFILES/logs/.keep"
+  log "📎 Created logs/.keep file to ensure Git tracking"
+else
+  log "📎 logs/.keep already present"
+fi
+
 source "$MODULES/_log.sh"
 source "$MODULES/_env.sh"
 
