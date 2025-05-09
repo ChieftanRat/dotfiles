@@ -3,5 +3,6 @@
   "lazy.nvim": { "branch": "main", "commit": "6c3bda4aca61a13a9c63f1c1d1b16b9d3be90d7a" },
   "mini.icons": { "branch": "main", "commit": "397ed3807e96b59709ef3292f0a3e253d5c1dc0a" },
   "netria": { "branch": "main", "commit": "77177e4dd916f291c0ba982f2684c0dac1ef66bd" },
+  "snacks.nvim": { "branch": "main", "commit": "bc0630e43be5699bb94dadc302c0d21615421d93" },
   "yugen": { "branch": "main", "commit": "ae3af1dbbceb8a3702acd34c5ae7a223793b5873" }
 }

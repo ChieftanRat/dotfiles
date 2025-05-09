@@ -28,6 +28,7 @@ Thumbs.db
 # ========== Dotfiles Metadata or Artifacts ==========
 bootstrap.log
 logs/
+.setup_done_*
 !logs/.keep  # Keep empty dir if needed
 
 # ========== Flatpak + AppImage ==========

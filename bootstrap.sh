@@ -12,6 +12,13 @@ PROFILE="$HOME/.dotfiles/system-profile.sh"
 
 source "$MODULES/_require.sh"
 
+# 🛡 Prevent rerun on same machine
+existing_flag=$(find "$DOTFILES" -name ".setup_done_*" 2>/dev/null | head -n 1)
+if [[ -f "$existing_flag" ]]; then
+    log "⚠️  Setup already completed on this machine. Found: $existing_flag"
+    exit 1
+fi
+
 # --- Timeshift Snapshot (if applicable)
 if command -v timeshift &>/dev/null; then
     log "📸 Creating Timeshift snapshot..."
@@ -26,30 +33,33 @@ RUN_FLATPAK=true
 RUN_SYNC=true
 RUN_SDDM=true
 RUN_REFIND=true
+RUN_APPIMAGES=true
 DRY=false
 
 for arg in "$@"; do
-  case $arg in
-    --no-flatpak) RUN_FLATPAK=false ;;
-    --no-sync)    RUN_SYNC=false ;;
-    --no-sddm)    RUN_SDDM=false ;;
-    --no-refind)  RUN_REFIND=false ;;
-    --dry-run)    DRY=true ;;
-    --help|-h)
-        echo "Usage: ./bootstrap.sh [flags]"
-        echo "  --no-flatpak   Skip Flatpak installs"
-        echo "  --no-sync      Skip dotfiles sync setup"
-        echo "  --no-sddm      Skip SDDM theme setup"
-        echo "  --no-refind    Skip rEFInd theme setup"
-        echo "  --dry-run      Run all modules in preview mode"
-        exit 0
-        ;;
-    *) fatal "❌ Unknown flag: $arg" ;;
-  esac
+    case $arg in
+        --no-flatpak)   RUN_FLATPAK=false ;;
+        --no-sync)      RUN_SYNC=false ;;
+        --no-sddm)      RUN_SDDM=false ;;
+        --no-refind)    RUN_REFIND=false ;;
+        --no-appimages) RUN_APPIMAGES=false ;;
+        --dry-run)      DRY=true ;;
+        --help|-h)
+            echo "Usage: ./bootstrap.sh [flags]"
+            echo "  --no-flatpak    Skip Flatpak installs"
+            echo "  --no-sync       Skip dotfiles sync setup"
+            echo "  --no-sddm       Skip SDDM theme setup"
+            echo "  --no-refind     Skip rEFInd theme setup"
+            echo "  --no-appimages  Skip AppImage setup"
+            echo "  --dry-run       Run all modules in preview mode"
+            exit 0
+            ;;
+        *) fatal "❌ Unknown flag: $arg" ;;
+    esac
 done
 
 # --- Required Tools
-require git fish curl rsync neovim zoxide
+require git fish curl rsync nvim zoxide
 
 # --- Optional machine profile
 PROFILE="$DOTFILES/system-profile.sh"
@@ -58,15 +68,34 @@ PROFILE="$DOTFILES/system-profile.sh"
 # --- Module Calls
 log "🚀 Starting dotfiles bootstrap..."
 
-# Fish & Nvim Configs
-bash "$MODULES/02_symlinks.fish"
+bash "$MODULES/00_git_identity.sh" "$@"
 
-# Flatpak Apps
-if $HAS_FLATPAK && $RUN_FLATPAK; then
-    bash "$MODULES/03_flatpaks.fish"
-else
-    log "⏭️ Flatpak step skipped"
-fi
+log "🐟 Running Fish-based setup scripts.."
+
+for script in "$MODULES"/[0-9][0-9]_*.fish; do
+  script_name="$(basename "$script")"
+
+  # Skip conditionals
+  case "$script_name" in
+    03_flatpaks.fish)
+      if ! $HAS_FLATPAK || ! $RUN_FLATPAK; then
+        log "⏭️ Flatpak step skipped"
+        continue
+      fi
+      ;;
+    04_appimages.fish)
+      if ! $RUN_APPIMAGES; then
+        "⏭️ AppImage step skipped"
+        continue
+      fi
+      ;;
+  esac
+
+  if [ -f "$script" ]; then
+    log "➡️Executing: $script_name"
+    fish "$script" || log "⚠️Warning: $script_name exited with code $?"
+  fi
+done
 
 # SDDM Theme
 if $RUN_SDDM; then
@@ -85,6 +114,17 @@ bash "$MODULES/12_cursor_switcher.sh"
 # Sync Script Setup
 if $RUN_SYNC; then
     bash "$MODULES/13_dotfiles_sync.sh"
+fi
+
+# --- Completion + Setup Flag
+if [[ $? -eq 0 ]]; then
+    machine_id=$(hostname)-$(cat /etc/machine-id 2>/dev/null || echo $RANDOM)
+    setup_flag="$DOTFILES/.setup_done_$machine_id"
+
+    touch "$setup_flag"
+    log "✅ Setup flag created: $setup_flag"
+else
+    log "[ERROR] Setup did not complete cleanly. Setup flag not set"
 fi
 
 log "🎉 Bootstrap complete at $(date '+%H:%M:%S')"

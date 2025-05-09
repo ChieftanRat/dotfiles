@@ -1,0 +1,13 @@
+📀 Starting rEFInd theme setup...
+🔧 Processing theme: blackcat
+📥 Cloning blackcat from https://github.com/Scorpi-ON/BlackCatMuzzle-rEFInd...
+✅ Installed blackcat into /boot/EFI/refind/themes/blackcat
+🔧 Processing theme: glassy
+📥 Cloning glassy from https://github.com/Pr0cella/rEFInd-glassy...
+✅ Installed glassy into /boot/EFI/refind/themes/glassy
+🔧 Processing theme: glow
+📥 Cloning glow from https://github.com/antsif-a/glow...
+✅ Installed glow into /boot/EFI/refind/themes/glow
+🔧 Processing theme: rosepine
+☑️  Theme rosepine already present in /boot/EFI/refind/themes/rosepine
+🎉 rEFInd theme setup complete!

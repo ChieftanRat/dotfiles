@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # Load logging functions
-source "$HOME/.dotfiles/modules/_log.sh"
+source "$HOME/.dotfiles/modules/_log.fish"
 
 # Allow dry-run mode
 set dryrun (contains -- --dry-run $argv) && log "💡 Dry-run enabled. No changes will be made."

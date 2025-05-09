@@ -1,0 +1,17 @@
+⏭️ Skipping Timeshift snapshot — not installed yet
+✅ Found dependency: git
+✅ Found dependency: fish
+✅ Found dependency: curl
+✅ Found dependency: rsync
+✅ Found dependency: nvim
+✅ Found dependency: zoxide
+🚀 Starting dotfiles bootstrap...
+🐟 Running Fish-based setup scripts..
+➡️Executing: 01_packages.fish
+➡️Executing: 02_symlinks.fish
+⏭️ Flatpak step skipped
+➡️Executing: 04_appimages.fish
+⚠️Warning: 04_appimages.fish exited with code 127
+✅ Setup flag created at ~/.dotfiles/.setup_done
+🎉 Bootstrap complete at 11:06:05
+📝 Log saved to: /home/ouiouibaguette/.dotfiles/logs/bootstrap_2025-05-08_11-03-16.log

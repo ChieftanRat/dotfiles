@@ -4,38 +4,51 @@ set -euo pipefail
 source "$HOME/.dotfiles/modules/_log.sh"
 
 THEME_LIST="$HOME/.dotfiles/refind-themes.txt"
-REFIND_CONF="/boot/EFI/refind/refind.conf"
-REFIND_THEME_DIR="/boot/EFI/refind/themes"
+REFIND_DIR="/boot/EFI/refind"
+THEMES_DIR="$REFIND_DIR/themes"
+REFIND_CONF="$REFIND_DIR/refind.conf"
 
 DRY_RUN=false
 [[ "${1:-}" == "--dry-run" ]] && DRY_RUN=true
 
-[ -f "$THEME_LIST" ] || fatal "Missing theme list: $THEME_LIST"
-[ -f "$REFIND_CONF" ] || fatal "Missing config: $REFIND_CONF"
+# Sanity check
+[[ -f "$THEME_LIST" ]] || fatal "Missing theme list: $THEME_LIST"
+[[ -f "$REFIND_CONF" ]] || fatal "Missing config: $REFIND_CONF"
 
-current=$(grep '^include ' "$REFIND_CONF" | awk -F '/' '{print $2}' || echo "none")
-log "🧙 Current rEFInd theme: $current"
+# Extract current theme from include line (assumes path format)
+current=$(grep '^include' "$REFIND_CONF" | awk -F/ '{print $NF}' || echo "none")
+log "📂 Current rEFInd theme: $current"
 
-mapfile -t THEMES < <(awk '{print $1}' "$THEME_LIST")
+# Parse available themes from file
+mapfile -t THEMES < <(awk '!/^#|^\s*$/{print $1}' "$THEME_LIST")
 
 echo "Available rEFInd themes:"
 for i in "${!THEMES[@]}"; do
-    echo "[$((i+1))] ${THEMES[$i]}"
+  echo "$((i + 1))) ${THEMES[$i]}"
 done
 
 read -rp "Select a theme: " choice
 [[ "$choice" =~ ^[0-9]+$ ]] || fatal "Invalid selection"
+(( choice >= 1 && choice <= ${#THEMES[@]} )) || fatal "Selection out of range"
 
-selected="${THEMES[$((choice-1))]}"
-conf_path=$(awk -v theme="$selected" '$1 == theme {print $3}' "$THEME_LIST")
+selected="${THEMES[$((choice - 1))]}"
+repo=$(awk -v theme="$selected" '$1 == theme {print $2}' "$THEME_LIST")
+[[ -n "$repo" ]] || fatal "Could not find repo for theme '$selected'"
 
-if $DRY_RUN; then
-    log "[DRY RUN] Would switch to: $selected"
-    log "[DRY RUN] Would update include to: $conf_path"
-    exit 0
-fi
+# Clone and install theme
+log "📥 Installing rEFInd theme: $selected"
+tmp_dir=$(mktemp -d)
 
-sudo sed -i '/^include /d' "$REFIND_CONF"
+git clone --depth 1 "$repo" "$tmp_dir"
+
+sudo mkdir -p "$THEMES_DIR/$selected"
+sudo cp -r "$tmp_dir"/* "$THEMES_DIR/$selected"
+rm -rf "$tmp_dir"
+
+# Update refind.conf
+conf_path="themes/$selected/theme.conf"
+sudo sed -i '/^include/d' "$REFIND_CONF"
 echo "include $conf_path" | sudo tee -a "$REFIND_CONF" > /dev/null
 
-log "✅ rEFInd theme '$selected' activated."
+log "✅ rEFInd theme '$selected' installed and activated."
+

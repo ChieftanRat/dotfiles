@@ -1,0 +1,16 @@
+📸 Creating Timeshift snapshot...
+✅ Found dependency: git
+✅ Found dependency: fish
+✅ Found dependency: curl
+✅ Found dependency: rsync
+✅ Found dependency: nvim
+✅ Found dependency: zoxide
+🚀 Starting dotfiles bootstrap...
+🐟 Running Fish-based setup scripts..
+➡️Executing: 01_packages.fish
+➡️Executing: 02_symlinks.fish
+➡️Executing: 03_flatpaks.fish
+➡️Executing: 04_appimages.fish
+✅ Setup flag created at ~/.dotfiles/.setup_done
+🎉 Bootstrap complete at 01:06:51
+📝 Log saved to: /home/ouiouibaguette/.dotfiles/logs/bootstrap_2025-05-09_01-06-11.log

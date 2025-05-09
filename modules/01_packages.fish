@@ -1,7 +1,5 @@
 #!/usr/bin/env fish
 
-set -e
-
 # Optional dry-run mode (preview actions without installing)
 set DRY_RUN (contains --dry-run $argv) # Usage: ./01_packages.fish --dry-run
 

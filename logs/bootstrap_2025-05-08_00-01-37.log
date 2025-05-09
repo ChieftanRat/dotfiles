@@ -1,0 +1,7 @@
+⏭️ Skipping Timeshift snapshot — not installed yet
+✅ Found dependency: git
+✅ Found dependency: fish
+✅ Found dependency: curl
+✅ Found dependency: rsync
+✅ Found dependency: nvim
+❌ 🛑 Required command 'zoxide' not found in PATH.

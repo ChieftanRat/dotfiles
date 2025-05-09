@@ -1,48 +1,54 @@
 #!/usr/bin/env fish
 
-set -l args $argv
-set -l DRY_RUN (contains --dry-run $args)
-set -l FORCE (contains --force $args)
+source "$HOME/.dotfiles/modules/_log.fish"
 
-set repo "$HOME/.dotfiles"
-set config_dir "$HOME/.config"
-
-# Function to log with emoji
-function log
-    echo -e "🌀 $argv"
+set -l DRY_RUN 0
+for arg in $argv
+    if test "$arg" = "--dry-run"
+        set DRY_RUN 1
+    end
 end
 
-# Function to handle symlink creation with checks
-function link_file
-    set -l src $argv[1]
-    set -l dest $argv[2]
+set -l FORCE 0
+for arg in $argv
+    if test "$arg" = "--force"
+        set FORCE 1
+    end
+end
 
-    if test -L $dest
-        log "Symlink already exists: $dest"
-        return
-    else if test -e $dest
-        if test $FORCE
-            log "⚠️ Overwriting existing file: $dest"
-            and rm -rf $dest
+log "🔗 Starting symlink creation..."
+
+# Define list of source:target pairs
+set -l symlinks \
+    "$HOME/.dotfiles/nvim:~/.config/nvim" \
+    "$HOME/.dotfiles/fish:~/.config/fish" \
+    "$HOME/.dotfiles/rofi:~/.config/rofi"
+
+# Process each pair
+for pair in $symlinks
+    set -l src (echo $pair | cut -d ':' -f 1)
+    set -l dest (eval echo (echo $pair | cut -d ':' -f 2))
+
+    if test -e $dest
+        if test $FORCE -eq 1
+            if test $DRY_RUN -eq 1
+                log "[DRY RUN] Would remove $dest before linking."
+            else
+                log "⚠️  Overwriting existing file: $dest"
+                rm -rf "$dest"
+            end
         else
-            log "Skipping $dest — regular file/folder already exists. Use --force to override."
-            return
+            log "⚠️  Skipping $dest — already exists. Use --force to override."
+            continue
         end
     end
 
-    if test $DRY_RUN
+    if test $DRY_RUN -eq 1
         log "[DRY RUN] Would link $src → $dest"
     else
-        ln -s $src $dest
-        log "Linked $src → $dest"
+        ln -s "$src" "$dest"
+        log "📎 Linked $src → $dest"
     end
 end
 
-# Symlink directories (fish, nvim, rofi)
-for folder in fish nvim rofi
-    set src "$repo/$folder"
-    set dest "$config_dir/$folder"
-    link_file $src $dest
-end
-
-# Standalone file: 
+log "✅ Symlink setup completed"

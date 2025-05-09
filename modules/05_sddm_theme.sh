@@ -15,6 +15,7 @@ if [[ ! -f "$THEME_LIST" ]]; then
 fi
 
 while read -r name repo; do
+    [[ "$name" =~ ^#.*$ || -z "$name" || -z "$repo" ]] && continue
     set_theme=0
     THEME_DIR="/usr/share/sddm/themes/$name"
 

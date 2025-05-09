@@ -9,7 +9,9 @@ WALLPAPER_DIR="$HOME/.dotfiles/wallpapers"
 
 # Detect current themes
 SDDM_THEME=$(grep '^Current=' /etc/sddm.conf | cut -d'=' -f2 || echo "unknown")
-REFIND_THEME=$(grep '^include ' /boot/EFI/refind/refind.conf | awk -F '/' '{print $2}' || echo "unknown")
+REFIND_THEME=$(grep '^include ' /boot/EFI/refind/refind.conf | awk -F '/' '{print $2}' 2>/dev/null || true)
+REFIND_THEME=${REFIND_THEME:-unknown}
+log "Detected REFIND_THEME: $REFIND_THEME"
 
 SDDM_DIR="/usr/share/sddm/themes/$SDDM_THEME"
 REFIND_DIR="/boot/EFI/refind/themes/$REFIND_THEME"
@@ -44,6 +46,7 @@ if [[ -n "$DEFAULT_WALL" ]]; then
             break
         fi
     done
+    : "${default_index:=1}" # fallback default index
     echo ""
     read -rp "Select wallpaper [default: $default_index]: " wp_choice
     wp_choice="${wp_choice:-$default_index}"

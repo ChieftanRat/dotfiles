@@ -7,7 +7,7 @@ MODULES="$DOTFILES/modules"
 LOG_DIR="$DOTFILES/logs"
 LOG_FILE="$LOG_DIR/menu.log"
 
-# Setup detection
+# Determines if setup was already completed
 SETUP_FLAG="$DOTFILES/.setup_done"
 IS_FIRST_RUN=true
 if [ -f "$SETUP_FLAG" ]; then
@@ -43,7 +43,7 @@ function show_basic_menu() {
     echo "1) Run full bootstrap"
     echo "2) Install Flatpak"
     echo "3) Apply SDDM theme"
-    echo "4) Set wallpaper"
+    echo "4) Apply rEFIND theme"
     echo "5) Help"
     echo "6) Exit"
 	echo
@@ -57,19 +57,22 @@ function show_advanced_menu() {
     echo "1) Run full bootstrap"
     echo "2) Install Flatpak"
     echo "3) Apply SDDM theme"
-    echo "4) Set wallpaper"
-    echo "5) Switch cursors"
-    echo "6) Manual dotfiles sync"
-    echo "7) Update Flatpaks"
-    echo "8) Clean logs older than 7 days"
-    echo "9) Smart dotfiles sync (feature branch aware)"
-    echo "10) Safe dotfiles sync (stash-aware)"
-    echo "11) Cleanup: stashes & old logs"
-    echo "12) View CLI flag reference for dotfiles tools"
-    echo "13) Dry run: Preview dotfiles sync changes"
-    echo "14) Refresh dotfiles repo"
-    echo "15) Help"
-    echo "16) Exit"
+    echo "4) Apply rEFIND theme"
+    echo "5) Set wallpaper"
+    echo "6) Switch cursors"
+    echo "7) Apply Waybar theme"
+    echo "8) Manual dotfiles sync"
+    echo "9) Update Flatpaks"
+    echo "10) Clean logs older than 7 days"
+    echo "11) Smart dotfiles sync (feature branch aware)"
+    echo "12) Safe dotfiles sync (stash-aware)"
+    echo "13) Cleanup: stashes & old logs"
+    echo "14) View CLI flag reference for dotfiles tools"
+    echo "15) Dry run: Preview dotfiles sync changes"
+    echo "16) Refresh dotfiles repo"
+    echo "17) Help"
+    echo "18) Exit"
+    echo
 }
 
 # Help info
@@ -86,18 +89,19 @@ function show_help() {
         echo "6: Exit this menu"
     else
         echo "1–4: Same as above"
-        echo "5: Switch your cursor theme"
-        echo "6: Manually push/pull dotfiles"
-        echo "7: Flatpak system updates"
-        echo "8: Clean logs (older than 7 days)"
-        echo "9: Branch-aware dotfiles sync"
-        echo "10: Safe sync (stash-aware)"
-        echo "11: Clean stashes and logs"
-        echo "12: CLI flags reference for your dotfiles tools"
-        echo "13: Dry run: preview sync changes"
-        echo "14: Refresh your dotfiles repo"
-        echo "15: This help screen"
-        echo "16: Exit"
+        echo "6: Switch your cursor theme"
+        echo "7: Apply Waybar theme"
+        echo "8: Manually push/pull dotfiles"
+        echo "9: Flatpak system updates"
+        echo "10: Clean logs (older than 7 days)"
+        echo "11: Branch-aware dotfiles sync"
+        echo "12: Safe sync (stash-aware)"
+        echo "13: Clean stashes and logs"
+        echo "14: CLI flags reference for your dotfiles tools"
+        echo "15: Dry run: preview sync changes"
+        echo "16: Refresh your dotfiles repo"
+        echo "17: This help screen"
+        echo "18: Exit"
     fi
     echo
     read -n 1 -s -r -p "Press any key to return to the menu..."
@@ -115,17 +119,19 @@ while true; do
 
     case "$opt" in
         1)  [ -f "$DOTFILES/bootstrap.sh" ] && bash "$DOTFILES/bootstrap.sh" && touch "$SETUP_FLAG" || fatal "[MISSING] bootstrap.sh" ;;
-        2)  [ -f "$MODULES/03_flatpaks.sh" ] && bash "$MODULES/03_flatpaks.sh" || fatal "[MISSING] 03_flatpaks.sh" ;;
+        2)  [ -f "$MODULES/03_flatpaks.fish" ] && fish "$MODULES/03_flatpaks.fish" || fatal "[MISSING] 03_flatpaks.fish" ;;
         3)  [ -f "$MODULES/05_sddm_theme.sh" ] && bash "$MODULES/05_sddm_theme.sh" || fatal "[MISSING] 05_sddm_theme.sh" ;;
-        4)  [ -f "$MODULES/10_set_wallpaper.sh" ] && bash "$MODULES/10_set_wallpaper.sh" || fatal "[MISSING] 10_set_wallpaper.sh" ;;
-        5)  [ "$IS_FIRST_RUN" = true ] && show_help || ([ -f "$MODULES/12_cursor_switcher.sh" ] && bash "$MODULES/12_cursor_switcher.sh" || fatal "[MISSING] 12_cursor_switcher.sh") ;;
-        6)  [ "$IS_FIRST_RUN" = true ] && { echo -e "${GREEN}Exiting... Thank you!${NC}"; break; } || ([ -f "$MODULES/sync/dotfiles-sync.sh" ] && bash "$MODULES/sync/dotfiles-sync.sh" || fatal "[MISSING] dotfiles-sync.sh") ;;
-        7)  [ -f "$MODULES/03_flatpaks.sh" ] && bash "$MODULES/03_flatpaks.sh" || fatal "[MISSING] 03_flatpaks.sh" ;;
-        8)  [ -f "$MODULES/14_log_cleanup.sh" ] && bash "$MODULES/14_log_cleanup.sh" || fatal "[MISSING] 14_log_cleanup.sh" ;;
-        9)  [ -f "$MODULES/sync/dotfiles-sync.sh" ] && bash "$MODULES/sync/dotfiles-sync.sh" || fatal "[MISSING] dotfiles-sync.sh" ;;
-        10) [ -f "$MODULES/sync/dotfiles-sync-safe.sh" ] && bash "$MODULES/sync/dotfiles-sync-safe.sh" || fatal "[MISSING] dotfiles-sync-safe.sh" ;;
-        11) [ -f "$MODULES/sync/dotfiles-cleanup.sh" ] && bash "$MODULES/sync/dotfiles-cleanup.sh" || fatal "[MISSING] dotfiles-cleanup.sh" ;;
-        12)
+        4)  [ -f "$MODULES/07_refind_themes.sh" ] && bash "$MODULES/07_refind_themes.sh" || fatal "[MISSING] 07_refind_themes.sh" ;;
+        5)  [ -f "$MODULES/10_set_wallpaper.sh" ] && bash "$MODULES/10_set_wallpaper.sh" || fatal "[MISSING] 10_set_wallpaper.sh" ;;
+        6)  [ "$IS_FIRST_RUN" = true ] && show_help || ([ -f "$MODULES/12_cursor_switcher.sh" ] && bash "$MODULES/12_cursor_switcher.sh" || fatal "[MISSING] 12_cursor_switcher.sh") ;;
+        7)  [ -f "$MODULES/11_waybar_theme.sh" ] && bash "$MODULES/11_waybar_theme.sh" || fatal "[MISSING] 11_waybar_theme.sh" ;;
+        8)  [ "$IS_FIRST_RUN" = true ] && { echo -e "${GREEN}Exiting... Thank you!${NC}"; break; } || ([ -f "$MODULES/sync/dotfiles-sync.sh" ] && bash "$MODULES/sync/dotfiles-sync.sh" || fatal "[MISSING] dotfiles-sync.sh") ;;
+        9)  [ -f "$MODULES/03_flatpaks.fish" ] && fish "$MODULES/03_flatpaks.fish" || fatal "[MISSING] 03_flatpaks.fish" ;;
+        10)  [ -f "$MODULES/14_log_cleanup.sh" ] && bash "$MODULES/14_log_cleanup.sh" || fatal "[MISSING] 14_log_cleanup.sh" ;;
+        11)  [ -f "$MODULES/sync/dotfiles-sync.sh" ] && bash "$MODULES/sync/dotfiles-sync.sh" || fatal "[MISSING] dotfiles-sync.sh" ;;
+        12) [ -f "$MODULES/sync/dotfiles-sync-safe.sh" ] && bash "$MODULES/sync/dotfiles-sync-safe.sh" || fatal "[MISSING] dotfiles-sync-safe.sh" ;;
+        13) [ -f "$MODULES/sync/dotfiles-cleanup.sh" ] && bash "$MODULES/sync/dotfiles-cleanup.sh" || fatal "[MISSING] dotfiles-cleanup.sh" ;;
+        14)
             clear
             echo ""
             echo "📘 CLI Flag Reference"
@@ -148,7 +154,7 @@ while true; do
             echo ""
             read -n 1 -s -r -p "Press any key to return to menu"
             ;;
-		13)
+		15)
 		{
 			echo -e "\n🧪 Running dry run for dotfiles sync..."
 			bash "$HOME/.dotfiles/modules/dotfiles-sync.sh" --dry-run
@@ -156,7 +162,7 @@ while true; do
 		}
 		;;
 
-		14)
+		16)
 		{
 			git -C "$DOTFILES" pull --rebase \
 				&& echo -e "${GREEN}✓ Repo refreshed!${NC}" \
@@ -166,8 +172,8 @@ while true; do
 		}
 		;;
 
-        15) show_help ;;
-        16) echo -e "${GREEN}Exiting... Thank you for using the dotfiles manager!${NC}"; break ;;
+        17) show_help ;;
+        18) echo -e "${GREEN}Exiting... Thank you for using the dotfiles manager!${NC}"; break ;;
         *)  echo -e "${RED}Invalid choice. Try again.${NC}"; sleep 1 ;;
     esac
 done
