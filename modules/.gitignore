@@ -27,7 +27,7 @@ Thumbs.db
 
 # ========== Dotfiles Metadata or Artifacts ==========
 bootstrap.log
-logs/
+logs/*.log
 .setup_done_*
 !logs/.keep  # Keep empty dir if needed
 
