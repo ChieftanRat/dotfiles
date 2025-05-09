@@ -18,11 +18,25 @@ end
 
 log "🔗 Starting symlink creation..."
 
-# Define list of source:target pairs
+# Source logging (ensure it's available before logging anything)
+if test -f "$DOTFILES/modules/_log.fish"
+    source "$DOTFILES/modules/_log.fish"
+end
+
+# Ensure the wallpapers target directory exists
+set -l pictures_wall_dir "$HOME/Pictures/wallpapers"
+if not test -d "$pictures_wall_dir"
+    mkdir -p "$pictures_wall_dir"
+    log "📁 Created $pictures_wall_dir"
+end
+
+# Symlink definitions
 set -l symlinks \
-    "$HOME/.dotfiles/nvim:~/.config/nvim" \
-    "$HOME/.dotfiles/fish:~/.config/fish" \
-    "$HOME/.dotfiles/rofi:~/.config/rofi"
+    "$HOME/.dotfiles/nvim:$HOME/.config/nvim" \
+    "$HOME/.dotfiles/fish:$HOME/.config/fish" \
+    "$HOME/.dotfiles/rofi:$HOME/.config/rofi" \
+    "$HOME/.dotfiles/wallpapers:$pictures_wall_dir" \
+    "$HOME/.dotfiles/modules/aliases.fish:$HOME/.config/fish/conf.d/aliases.fish"
 
 # Process each pair
 for pair in $symlinks
