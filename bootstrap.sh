@@ -60,6 +60,7 @@ RUN_SYNC=true
 RUN_SDDM=true
 RUN_REFIND=true
 RUN_APPIMAGES=true
+RUN_WAYBAR=true
 DRY=false
 
 for arg in "$@"; do
@@ -69,6 +70,7 @@ for arg in "$@"; do
         --no-sddm)      RUN_SDDM=false ;;
         --no-refind)    RUN_REFIND=false ;;
         --no-appimages) RUN_APPIMAGES=false ;;
+        --no-waybar)    RUN_WAYBAR=false ;;
         --dry-run)      DRY=true ;;
         --help|-h)
             echo "Usage: ./bootstrap.sh [flags]"
@@ -77,6 +79,7 @@ for arg in "$@"; do
             echo "  --no-sddm       Skip SDDM theme setup"
             echo "  --no-refind     Skip rEFInd theme setup"
             echo "  --no-appimages  Skip AppImage setup"
+            echo "  --no-waybar     Skip Waybar theme setup"
             echo "  --dry-run       Run all modules in preview mode"
             exit 0
             ;;
@@ -136,6 +139,9 @@ fi
 # Wallpaper, Cursors, etc.
 bash "$MODULES/10_set_wallpaper.sh" "$($DRY && echo --dry-run)"
 bash "$MODULES/12_cursor_switcher.sh"
+
+# Waybar Theme
+bash "$MODULES/11_waybar_theme.sh" "$([ $DRY ] && echo --dry-run)"
 
 # Sync Script Setup
 if $RUN_SYNC; then
