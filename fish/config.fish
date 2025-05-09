@@ -9,7 +9,7 @@ end
 
 # --- Aliases
 alias nv='nvim'
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dotfiles='git --git-dir=$HOME/.dotfiles/.git --work-tree=$HOME'
 alias dfs='dotfiles status -uno'
 alias reload='source ~/.config/fish/config.fish'
 alias ..='cd ..'
