@@ -1,5 +1,5 @@
 #!/usr/bin/env fish
-set -euo pipefail
+# no strict mode in fish
 
 function validate_refind_theme
     if not set -q argv[1]
