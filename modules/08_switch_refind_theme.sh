@@ -40,19 +40,31 @@ log "📥 Installing rEFInd theme: $selected"
 tmp_dir=$(mktemp -d)
 
 git clone --depth 1 "$repo" "$tmp_dir"
-
 sudo mkdir -p "$THEMES_DIR/$selected"
 sudo cp -r "$tmp_dir"/* "$THEMES_DIR/$selected"
 rm -rf "$tmp_dir"
+
+# Patch theme.conf paths to be relative to its own directory
+theme_conf="${THEMES_DIR}/${selected}/theme.conf"
+if [[ -f "$theme_conf" ]]; then
+    sed -i -E \
+        -e 's@banner[[:space:]]+themes/[^/]+/([^"]+)@banner \1@' \
+        -e 's@selection_big[[:space:]]+themes/[^/]+/([^"]+)@selection_big \1@' \
+        -e 's@selection_small[[:space:]]+themes/[^/]+/([^"]+)@selection_small \1@' \
+        -e 's@icons_dir[[:space:]]+themes/[^/]+/([^"]+)@icons_dir \1@' \
+        "$theme_conf"
+    log "🔧 Patched $theme_conf paths to be relative"
+else
+    log "⚠️  Warning: theme.conf not found in $selected — skipping patch"
+fi
 
 # Find theme.conf relative to the theme directory
 conf_rel_path=$(find "$THEMES_DIR/$selected" -name theme.conf -print -quit | sed "s|$THEMES_DIR/||")
 [[ -z "$conf_rel_path" ]] && fatal "Could not find theme.conf in $selected"
 
 # Update refind.conf
-conf_path="themes/$conf_rel_path"
 sudo sed -i '/^include/d' "$REFIND_CONF"
-echo "include $conf_path" | sudo tee -a "$REFIND_CONF" > /dev/null
-
+echo "include $conf_rel_path" | sudo tee -a "$REFIND_CONF" > /dev/null
+ 
 log "✅ rEFInd theme '$selected' installed and activated."
 
