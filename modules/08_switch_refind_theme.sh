@@ -44,23 +44,44 @@ sudo mkdir -p "$THEMES_DIR/$selected"
 sudo cp -r "$tmp_dir"/* "$THEMES_DIR/$selected"
 rm -rf "$tmp_dir"
 
-# Patch theme.conf paths to be relative to its own directory
+# 🩹 Patch theme.conf to use relative paths only
 theme_conf="${THEMES_DIR}/${selected}/theme.conf"
 if [[ -f "$theme_conf" ]]; then
-    sed -i -E \
-        -e 's@banner[[:space:]]+themes/[^/]+/([^"]+)@banner \1@' \
-        -e 's@selection_big[[:space:]]+themes/[^/]+/([^"]+)@selection_big \1@' \
-        -e 's@selection_small[[:space:]]+themes/[^/]+/([^"]+)@selection_small \1@' \
-        -e 's@icons_dir[[:space:]]+themes/[^/]+/([^"]+)@icons_dir \1@' \
-        "$theme_conf"
-    log "🔧 Patched $theme_conf paths to be relative"
+  sudo sed -i -E \
+    -e 's@([[:space:]]+)themes/[^/]+/@\1@g' \
+    "$theme_conf"
+  log "🔧 Patched $theme_conf to use relative paths"
 else
-    log "⚠️  Warning: theme.conf not found in $selected — skipping patch"
+  log "^⚠ Warning: theme.conf not found in $selected — skipping patch"
 fi
 
 # Find theme.conf relative to the theme directory
 conf_rel_path=$(find "$THEMES_DIR/$selected" -name theme.conf -print -quit | sed "s|$THEMES_DIR/||")
-[[ -z "$conf_rel_path" ]] && fatal "Could not find theme.conf in $selected"
+if [[ -z "$conf_rel_path" ]]; then
+  echo "❌ Could not find theme.conf in $selected"
+  exit 1
+fi
+
+# Validate all asset paths in theme.conf
+log "🔍 Validating theme assets..."
+missing=false
+grep -Eo 'themes/[^ ]+\.(png|jpg|bmp|ttf|conf)' "$theme_conf" | while read -r rel_path; do
+    full_path="/boot/EFI/refind/$rel_path"
+    if [[ ! -f "$full_path" ]]; then
+        log "❌ Missing: $rel_path"
+        missing=true
+    else
+        log "✅ Found: $rel_path"
+    fi
+done
+
+if $missing; then
+    log "⚠ Some assets referenced in theme.conf are missing!"
+    echo "Aborting theme switch to prevent broken rEFInd visuals."
+    exit 1
+else
+    log "🎯 All assets accounted for."
+fi
 
 # Update refind.conf
 sudo sed -i '/^include/d' "$REFIND_CONF"
