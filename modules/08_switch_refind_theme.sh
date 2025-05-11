@@ -45,8 +45,12 @@ sudo mkdir -p "$THEMES_DIR/$selected"
 sudo cp -r "$tmp_dir"/* "$THEMES_DIR/$selected"
 rm -rf "$tmp_dir"
 
+# Find theme.conf relative to the theme directory
+conf_rel_path=$(find "$THEMES_DIR/$selected" -name theme.conf -print -quit | sed "s|$THEMES_DIR/||")
+[[ -z "$conf_rel_path" ]] && fatal "Could not find theme.conf in $selected"
+
 # Update refind.conf
-conf_path="themes/$selected/theme.conf"
+conf_path="themes/$conf_rel_path"
 sudo sed -i '/^include/d' "$REFIND_CONF"
 echo "include $conf_path" | sudo tee -a "$REFIND_CONF" > /dev/null
 

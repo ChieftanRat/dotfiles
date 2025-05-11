@@ -121,7 +121,7 @@ while true; do
         1)  [ -f "$DOTFILES/bootstrap.sh" ] && bash "$DOTFILES/bootstrap.sh" && touch "$SETUP_FLAG" || fatal "[MISSING] bootstrap.sh" ;;
         2)  [ -f "$MODULES/03_flatpaks.fish" ] && fish "$MODULES/03_flatpaks.fish" || fatal "[MISSING] 03_flatpaks.fish" ;;
         3)  [ -f "$MODULES/05_sddm_theme.sh" ] && bash "$MODULES/05_sddm_theme.sh" || fatal "[MISSING] 05_sddm_theme.sh" ;;
-        4)  [ -f "$MODULES/07_refind_themes.sh" ] && bash "$MODULES/07_refind_themes.sh" || fatal "[MISSING] 07_refind_themes.sh" ;;
+        4)  [ -f "$MODULES/08_switch_refind_theme.sh" ] && bash "$MODULES/08_switch_refind_theme.sh" || fatal "[MISSING] 08_switch_refind_theme.sh" ;;
         5)  [ -f "$MODULES/10_set_wallpaper.sh" ] && bash "$MODULES/10_set_wallpaper.sh" || fatal "[MISSING] 10_set_wallpaper.sh" ;;
         6)  [ "$IS_FIRST_RUN" = true ] && show_help || ([ -f "$MODULES/12_cursor_switcher.sh" ] && bash "$MODULES/12_cursor_switcher.sh" || fatal "[MISSING] 12_cursor_switcher.sh") ;;
         7)  [ -f "$MODULES/11_waybar_theme.sh" ] && bash "$MODULES/11_waybar_theme.sh" || fatal "[MISSING] 11_waybar_theme.sh" ;;
