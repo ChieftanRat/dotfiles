@@ -1,6 +1,6 @@
 # refind-themes.txt
 # Format: name    repo_url
-blackcat    https://github.com/Scorpi-ON/BlackCatMuzzle-rEFInd
-glassy      https://github.com/Pr0cella/rEFInd-glassy
-glow        https://github.com/antsif-a/glow
-rosepine    https://github.com/xlacroixx/refind
+blackcat        https://github.com/Scorpi-ON/BlackCatMuzzle-rEFInd
+rEFIND-glassy   https://github.com/Pr0cella/rEFInd-glassy
+glow            https://github.com/antsif-a/glow
+rosepine        https://github.com/xlacroixx/refind

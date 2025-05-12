@@ -83,9 +83,14 @@ else
     log "🎯 All assets accounted for."
 fi
 
-# Update refind.conf
+# Final include patch (validated and guaranteed to exist)
+conf_path="themes/$selected/theme.conf"
+if [[ ! -f "$REFIND_DIR/$conf_path" ]]; then
+  fatal "theme.conf not found at $REFIND_DIR/$conf_path"
+fi
+
 sudo sed -i '/^include/d' "$REFIND_CONF"
-echo "include $conf_rel_path" | sudo tee -a "$REFIND_CONF" > /dev/null
- 
+echo "include $conf_path" | sudo tee -a "$REFIND_CONF" > /dev/null
+
 log "✅ rEFInd theme '$selected' installed and activated."
 
